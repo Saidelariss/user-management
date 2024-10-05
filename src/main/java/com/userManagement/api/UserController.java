@@ -1,9 +1,12 @@
 package com.userManagement.api;
 
 import com.userManagement.command.UserCommand;
+import com.userManagement.criteria.UserCriteria;
 import com.userManagement.domain.UserEntity;
 import com.userManagement.enums.UserRole;
 import com.userManagement.repository.UserRepository;
+import com.userManagement.service.UserService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,12 +19,11 @@ import java.util.Optional;
 @Slf4j
 @RequestMapping("/api/v1/users")
 @RestController
+@RequiredArgsConstructor
 public class UserController {
-    UserRepository repository;
+    private final UserRepository repository;
+    private final UserService userService;
 
-    public UserController(UserRepository repository) {
-        this.repository = repository;
-    }
 
     @PostMapping
     private ResponseEntity<Void> saveNewUser(@RequestBody UserCommand userCommand){
@@ -62,6 +64,21 @@ public class UserController {
         UserEntity user = repository.findById(id).orElseThrow(()->new RuntimeException("user not found"));
         repository.delete(user);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{id}")
+    public UserEntity getUserDetailsById(@PathVariable String id){
+        return repository.findById(id).orElseThrow(()->new RuntimeException("user not found"));
+    }
+
+    @GetMapping("search")
+    public List<UserEntity> getUsersByCriteria(@RequestBody UserCriteria userCriteria){
+            return userService.findUsers(userCriteria);
+    }
+
+    @GetMapping("query")
+    public List<UserEntity> getUserByEmailAndUsername(@RequestParam String keyword){
+            return userService.findUserByEmailAndUsername(keyword);
     }
 
 }
