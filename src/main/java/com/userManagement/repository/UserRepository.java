@@ -15,6 +15,7 @@ import java.util.List;
 
 public interface UserRepository extends JpaRepository<UserEntity,String>, JpaSpecificationExecutor<UserEntity> {
     List<UserEntity> findAll();
+    Page<UserEntity> findAll(Pageable pageable);
     default Page<UserEntity> findAllUsersByCriteria(UserCriteria criteria, Pageable pageable){
         Specification<UserEntity> specification = (root, query, builder) -> {
             List<Predicate> predicates = new ArrayList<>();

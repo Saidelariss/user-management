@@ -9,7 +9,9 @@ import com.userManagement.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -75,14 +77,14 @@ public class UserController {
 
     @GetMapping("search")
     public Page<UserEntity> getUsersByCriteria(Pageable pageable, UserCriteria userCriteria){
-        System.out.println(userCriteria);
-            return repository.findAllUsersByCriteria(userCriteria,pageable);
+        return repository.findAllUsersByCriteria(userCriteria,pageable);
     }
 
     @GetMapping("query")
     public List<UserEntity> getUserByEmailAndUsername(@RequestParam String keyword){
             return userService.findUserByEmailAndUsername(keyword);
     }
+
 
 }
 
