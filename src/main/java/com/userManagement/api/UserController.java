@@ -8,6 +8,8 @@ import com.userManagement.repository.UserRepository;
 import com.userManagement.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +32,7 @@ public class UserController {
         log.info("begin creating a new user");
         UserEntity user = new UserEntity();
         user.setUsername(userCommand.getUsername());
-        user.setEmail(userCommand.getUsername());
+        user.setEmail(userCommand.getEmail());
         user.setRole(userCommand.getRole());
         repository.save(user);
         return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -72,8 +74,9 @@ public class UserController {
     }
 
     @GetMapping("search")
-    public List<UserEntity> getUsersByCriteria(@RequestBody UserCriteria userCriteria){
-            return userService.findUsers(userCriteria);
+    public Page<UserEntity> getUsersByCriteria(Pageable pageable, UserCriteria userCriteria){
+        System.out.println(userCriteria);
+            return repository.findAllUsersByCriteria(userCriteria,pageable);
     }
 
     @GetMapping("query")
